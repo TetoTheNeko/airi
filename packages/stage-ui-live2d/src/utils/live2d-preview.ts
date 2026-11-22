@@ -43,9 +43,6 @@ export async function loadLive2DModelPreview(file: File) {
   app.ticker.stop()
 
   const modelInstance = new Live2DModel()
-  const objUrl = URL.createObjectURL(file)
-  const res = await fetch(objUrl)
-  const blob = await res.blob()
 
   const cleanup = () => {
     // A loaded model is on the global `Ticker.shared`, and its textures stay in
@@ -56,11 +53,10 @@ export async function loadLive2DModelPreview(file: File) {
     app.destroy()
     if (offscreenCanvas.isConnected)
       document.body.removeChild(offscreenCanvas)
-    URL.revokeObjectURL(objUrl)
   }
 
   try {
-    await Live2DFactory.setupLive2DModel(modelInstance, [new File([blob], file.name)], { autoInteract: false })
+    await Live2DFactory.setupLive2DModel(modelInstance, [file], { autoInteract: false })
     app.stage.addChild(modelInstance)
 
     modelInstance.x = 275
